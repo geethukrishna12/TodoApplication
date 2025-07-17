@@ -84,16 +84,13 @@ function createAndAppendTodo(todo) {
   labelContainer.classList.add("label-container");
   labelContainer.appendChild(label);
 
-  const status = document.createElement("div");
-  status.classList.add("completed-time");
-
-  if (todo.isChecked && todo.completedAt) {
-    status.textContent = "Completed: " + todo.completedAt;
-  } else {
-    status.textContent = "Status: In Progress";
-  }
-
-  labelContainer.appendChild(status);
+  // Add status
+  const statusText = document.createElement("div");
+  statusText.classList.add("completed-time");
+  statusText.textContent = todo.isChecked
+    ? `Status: Completed (${todo.completedAt})`
+    : `Status: In Progress`;
+  labelContainer.appendChild(statusText);
 
   const deleteIconContainer = document.createElement("div");
   deleteIconContainer.classList.add("delete-icon-container");
