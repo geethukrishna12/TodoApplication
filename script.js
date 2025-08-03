@@ -14,14 +14,22 @@ let currentFilter = "All";
 
 saveTodoButton.onclick = () => {
   localStorage.setItem("todoList", JSON.stringify(todoList));
+  showToast("Todos saved successfully!");
 };
+
+function showToast(message) {
+  const toastEl = document.getElementById("liveToast");
+  document.getElementById("toastMessage").textContent = message;
+  const toast = new bootstrap.Toast(toastEl);
+  toast.show();
+}
 
 function addTodo() {
   let userInput = document.getElementById("todoUserInput");
   let userInputValue = userInput.value.trim();
 
   if (userInputValue === "") {
-    alert("Enter Valid Text");
+    alert("Enter valid text");
     return;
   }
 
@@ -36,6 +44,7 @@ function addTodo() {
   todoList.push(newTodo);
   userInput.value = "";
   renderTodoList();
+  showToast("Task added successfully!");
 }
 
 addTodoButton.onclick = addTodo;
@@ -47,9 +56,7 @@ function toggleTodoStatus(uniqueNo) {
   const todo = todoList.find(t => t.uniqueNo === uniqueNo);
   if (todo) {
     todo.isChecked = !todo.isChecked;
-    todo.completedAt = todo.isChecked
-      ? new Date().toLocaleDateString()
-      : null;
+    todo.completedAt = todo.isChecked ? new Date().toLocaleDateString() : null;
   }
   renderTodoList();
 }
@@ -57,6 +64,7 @@ function toggleTodoStatus(uniqueNo) {
 function deleteTodo(uniqueNo) {
   todoList = todoList.filter(t => t.uniqueNo !== uniqueNo);
   renderTodoList();
+  showToast("Task deleted!");
 }
 
 function createAndAppendTodo(todo) {
@@ -84,7 +92,6 @@ function createAndAppendTodo(todo) {
   labelContainer.classList.add("label-container");
   labelContainer.appendChild(label);
 
-  // Add status
   const statusText = document.createElement("div");
   statusText.classList.add("completed-time");
   statusText.textContent = todo.isChecked
@@ -118,6 +125,11 @@ function renderTodoList() {
     filteredTodos = todoList.filter(todo => !todo.isChecked);
   } else if (currentFilter === "Completed") {
     filteredTodos = todoList.filter(todo => todo.isChecked);
+  }
+
+  if (filteredTodos.length === 0) {
+    todoItemsContainer.innerHTML = `<p class="empty-message">No tasks found.</p>`;
+    return;
   }
 
   for (let todo of filteredTodos) {
